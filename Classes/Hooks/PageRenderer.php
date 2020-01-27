@@ -13,6 +13,7 @@ namespace T3G\Querybuilder\Hooks;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use T3G\Querybuilder\QueryBuilder;
+use TYPO3\CMS\Core\Page\PageRenderer as CorePageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use UnexpectedValueException;
@@ -26,10 +27,9 @@ class PageRenderer
     /**
      * @param array $params
      *
-     * @throws InvalidArgumentException
-     * @throws UnexpectedValueException
+     * @param CorePageRenderer $pageRenderer
      */
-    public function renderPreProcess(array $params): void
+    public function renderPreProcess(array $params, CorePageRenderer $pageRenderer): void
     {
         //    TODO Check this. TYPO3_REQUEST is not supported anymore
         /** @var ServerRequestInterface $request */
@@ -37,9 +37,7 @@ class PageRenderer
         $queryParams = $request->getQueryParams();
         $table = $queryParams['table'] ?? '';
         $route = $queryParams['route'] ?? '';
-        if (!empty($table) && $route === '/web/list/') {
-            $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
-
+        if (!empty($table) && $route === '/module/web/list') {
             $pageRenderer->addInlineLanguageLabelFile('EXT:querybuilder/Resources/Private/Language/querybuilder-js.xlf');
             $pageRenderer->addCssFile('EXT:querybuilder/Resources/Public/Css/query-builder.default.css');
             $pageRenderer->addCssFile('EXT:querybuilder/Resources/Public/Css/custom-query-builder.css');
